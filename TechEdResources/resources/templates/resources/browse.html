@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load django_tables2 crispy_forms_tags %}
+
+{% block content %}
+<h1>Browse Articles</h1>
+
+<form method="get" class="form-inline mb-4">
+    <select name="subject" class="form-control mr-2">
+        <option value="">All Subjects</option>
+        {% for subject in subjects %}
+        <option value="{{ subject.id }}" {% if subject.id == request.GET.subject %}selected{% endif %}>
+            {{ subject.name }}
+        </option>
+        {% endfor %}
+    </select>
+    
+    <input type="text" name="keyword" class="form-control mr-2" 
+           placeholder="Search by keyword" value="{{ request.GET.keyword }}">
+    
+    <button type="submit" class="btn btn-primary">Filter</button>
+</form>
+
+{% render_table table %}
+
+{% if request.user.role == 'TUTOR' or request.user.role == 'ADMIN' %}
+<div class="mt-3">
+    <a href="{% url 'resources:add_article' %}" class="btn btn-success">Add New Article</a>
+</div>
+{% endif %}
+{% endblock %}
